@@ -51,16 +51,15 @@ function VideoUploadpage(props) {
             title: VideoTitle,
             description: Description,
             privacy:Private,
-            filepath:FilePath,
+            filePath:FilePath,
             category:Category,
             duration:Duration,
             thumbnail:ThumbnailPath
-
         }
         axios.post('/api/video/uploadVideo',variable)
         .then(response=>{
             if(response.data.success){
-                console.log(response.data)
+                console.log(variable)
                 message.success('성공적으로 업로드를 했습니다.')
                 setTimeout(()=>{
                     props.history.push('/')
@@ -86,6 +85,7 @@ function VideoUploadpage(props) {
                     fileName:response.data.fileName
                 }
                 setFilePath(response.data.filePath)
+                console.log(response.data.filePath)
                 axios.post('/api/video/thumbnail',variable).then(response=>{
                     if(response.data.success){
                         console.log(response.data)
@@ -129,8 +129,7 @@ function VideoUploadpage(props) {
                     </div>
                 </div>
                     <label>Title</label>
-                    <Input onChange={handleChangeTitle}
-                    value={VideoTitle} />
+                    <Input onChange={handleChangeTitle} value={VideoTitle} />
                     <br />
                     <br />
                     <label>Description</label>

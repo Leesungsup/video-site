@@ -9,7 +9,7 @@ var ffmpeg = require('fluent-ffmpeg');
 //=================================
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/')
+        cb(null, "uploads/")
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}_${file.originalname}`)
@@ -39,6 +39,17 @@ router.get('/getVideos',(req,res)=>{
     .exec((err,videos)=>{
         if(err) return res.status(400).send(err)
         res.status(200).json({success:true,videos})
+    })
+})
+router.post('/getVideoDetail',(req,res)=>{
+    Video.findOne({"_id":req.body.videoId})
+    .populate('writer')
+    .exec((err,videoDetail)=>{
+        if(err){
+            return res.status(400).send(err)
+        }
+        console.log('vidoe : ',videoDetail)
+        res.status(200).json({success:true,videoDetail})
     })
 })
 router.post('/uploadVideo',(req,res)=>{

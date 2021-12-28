@@ -4,6 +4,8 @@ const { Video } = require("../models/Video");
 const multer = require('multer')
 const { auth } = require("../middleware/auth");
 var ffmpeg = require('fluent-ffmpeg');
+const { Subscriber } = require('../models/Subscriber');
+const { response } = require('express');
 //=================================
 //             Video
 //=================================
@@ -23,7 +25,26 @@ var storage = multer.diskStorage({
     }
 })
 var upload = multer({ storage: storage }).single("file")
-
+router.post('/getSubscriptionVideos',(req,res)=>{
+    Subscriber.find({'userFrom':req.body.userFrom})
+    .exec((err,subscriberInfo)=>{
+        if(err){
+            return res.json({success:false,err})
+        }
+        let subscribedUser=[];
+        subscriberInfo.map((subscriber,i)=>{
+            subscribedUser.push(subscriber.userTo);
+        })
+        Video.find({writer : {$in : subscribedUser}})
+        .populate('writer')
+        .exec((err,videos)=>{
+            if(err){
+                return res.status(400).json({success:false})
+            }
+            return res.status(200).json({success:true,videos})
+        })
+    })
+})
 router.post('/uploadfiles',(req,res)=>{
     //비디오 저장
     upload(req,res,err=>{

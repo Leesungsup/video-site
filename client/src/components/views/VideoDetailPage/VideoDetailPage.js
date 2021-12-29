@@ -3,10 +3,11 @@ import {Row,Col, List, Avatar} from 'antd';
 import axios from 'axios'
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
+import Comment from './Sections/Comment'; 
 function VideoDetailPage(props) {
     const videoId = props.match.params.videoId
     const [VideoDetail, setVideoDetail] = useState([])
-    const [CommentLists, setCommentLists] = useState([])
+    const [Comments, setComments] = useState([])
 
     const videoVariable = {
         videoId: videoId
@@ -22,8 +23,20 @@ function VideoDetailPage(props) {
                     alert('Failed to get video Info')
                 }
             })
+        axios.post('/api/comment/getComments',videoVariable)
+        .then(response=>{
+            if(response.data.success){
+                console.log(response.data.comments)
+                setComments(response.data.comments)
+            }else{
+                alert("코멘트 정보를 가져오는 것을 실패 하였습니다.")
+            }
+        })
 
     }, [])
+    const refreshFunction = (newComment) => {
+        setComments(Comments.concat(newComment))
+    }
     if(VideoDetail.writer){
         const subscribeButton = VideoDetail.writer._id!==localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />
         return (
@@ -34,6 +47,8 @@ function VideoDetailPage(props) {
                         <List.Item actions={[subscribeButton]} >
                             <List.Item.Meta avatar title={VideoDetail.writer.name} description={VideoDetail.description} />
                         </List.Item>
+
+                        <Comment refreshFunction={refreshFunction} commentList={Comments} postId={videoId}/>
                     </div>
                 </Col>
                 <Col lg={6} xs={24}>

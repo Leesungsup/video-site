@@ -3,6 +3,7 @@ import React,{useState} from 'react'
 import {useSelector} from 'react-redux'
 import { Button, Input } from 'antd';
 import SingleComment from './SingleComment';
+import ReplyComment from './ReplyComment';
 const { TextArea } = Input;
 function Comment(props) {
     const videoId=props.postId
@@ -38,7 +39,10 @@ function Comment(props) {
             {/* Comment Lists  */}
             {props.commentList && props.commentList.map((comment,index)=>(
                 (!comment.responseTo &&
+                <React.Fragment>
                 <SingleComment refreshFunction={props.refreshFunction} comment={comment} postId={videoId} />
+                <ReplyComment refreshFunction={props.refreshFunction} parentCommentId={comment._id} postId={videoId} commentList={props.commentList}/>
+                </React.Fragment>
                 )
             ))}
             {/* Root Comment Form */}

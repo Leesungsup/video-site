@@ -29,6 +29,7 @@ function LikeDislikes(props) {
         })
         Axios.post('/api/like/getDisLikes',variable)
         .then(response=>{
+            console.log(response.data)
             if(response.data.success){
                 setDisLikes(response.data.dislikes.length)
                 response.data.dislikes.map(dislike=>{

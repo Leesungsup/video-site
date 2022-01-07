@@ -8,6 +8,7 @@ function ReplyComment(props) {
         props.commentList.map((comment)=>{
             if(comment.responseTo===props.parentCommentId){
                 commentNumber++
+                console.log(comment.responseTo)
             }
         })
         setChildCommentNumber(commentNumber)
@@ -15,13 +16,13 @@ function ReplyComment(props) {
     console.log(ChildCommentNumber)
     console.log(props.commentList)
     const renderReplyComment=(parentCommentId)=>{
-        console.log(props.parentCommentId)
+        console.log(parentCommentId)
         props.commentList.map((comment,index)=>(
             <React.Fragment>
                 {comment.responseTo === parentCommentId &&
                 <div style={{width:'80%',marginLeft:'40px'}}>
-                <SingleComment refreshFunction={props.refreshFunction} comment={comment} postId={props.videoId} />
-                <ReplyComment refreshFunction={props.refreshFunction} commentList={props.commentList} postId={props.videoId} parentCommentId={comment._id}/>
+                <SingleComment refreshFunction={props.refreshFunction} comment={comment} postId={props.postId} />
+                <ReplyComment refreshFunction={props.refreshFunction} commentList={props.commentList} postId={props.postId} parentCommentId={comment._id}/>
                 </div>
                 }
             </React.Fragment>
@@ -34,7 +35,7 @@ function ReplyComment(props) {
         <div>
             {ChildCommentNumber>0 &&
             <p style={{fontSize:'14px',margin:0,color:'gray'}} onClick={onhandleChange}>
-                View 1 more comment(s)
+                View {ChildCommentNumber} more comment(s)
             </p>
             }
             {OpenReplyComments && renderReplyComment(props.parentCommentId)}
